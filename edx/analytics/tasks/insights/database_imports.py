@@ -6,7 +6,7 @@ import logging
 import textwrap
 
 import luigi
-from luigi.hive import HiveQueryTask, HivePartitionTarget
+from luigi.hive import HivePartitionTarget, HiveQueryTask
 
 from edx.analytics.tasks.common.sqoop import SqoopImportFromMysql, SqoopImportMixin
 from edx.analytics.tasks.util.hive import hive_database_name, hive_decimal_type
@@ -201,8 +201,29 @@ class ImportStudentCourseEnrollmentTask(ImportMysqlToHiveTableTask):
         ]
 
 
-class ImportAuthUserTask(ImportMysqlToHiveTableTask):
+class ImportCourseEntitlementTask(ImportMysqlToHiveTableTask):
+    """ Imports the table containing learners' course entitlements. """
 
+    @property
+    def table_name(self):
+        return 'entitlements_courseentitlement'
+
+    @property
+    def columns(self):
+        return [
+            ('id', 'INT'),
+            ('uuid', 'STRING'),
+            ('course_uuid', 'STRING'),
+            ('user_id', 'INT'),
+            ('enrollment_course_run_id', 'INT'),
+            ('order_number', 'STRING'),
+            ('expired_at', 'TIMESTAMP'),
+            ('created', 'TIMESTAMP'),
+            ('modified', 'TIMESTAMP'),
+        ]
+
+
+class ImportAuthUserTask(ImportMysqlToHiveTableTask):
     """Imports user information from an external LMS DB to a destination directory."""
 
     @property
