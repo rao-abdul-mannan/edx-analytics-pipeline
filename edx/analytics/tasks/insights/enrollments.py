@@ -470,6 +470,7 @@ class DaysEnrolledForEvents(object):
         elif self.state == UNENROLLED and self.event.event_type == ACTIVATED:
             self.state = ENROLLED
         elif self.event.event_type == MODE_CHANGED:
+            pass
         else:
             log.warning(
                 'No state change for %s event. User %d is already in the requested state for course %s on %s.',
