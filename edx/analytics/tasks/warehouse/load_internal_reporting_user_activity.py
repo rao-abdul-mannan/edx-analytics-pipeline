@@ -306,4 +306,5 @@ class UserActivityWorkflow(WeeklyIntervalMixin, WarehouseMixin, luigi.WrapperTas
             warehouse_path=self.warehouse_path,
             overwrite_n_days=self.overwrite_n_days,
             overwrite_hive=self.overwrite_hive,
+            overwrite_mysql=self.overwrite_mysql,
         )

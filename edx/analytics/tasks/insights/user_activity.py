@@ -325,6 +325,8 @@ class InsertToMysqlCourseActivityTask(WeeklyIntervalMixin, UserActivityDownstrea
         significant=False
     )
 
+    overwrite = None
+
     def __init__(self, *args, **kwargs):
         super(InsertToMysqlCourseActivityTask, self).__init__(*args, **kwargs)
         self.overwrite = self.overwrite_mysql

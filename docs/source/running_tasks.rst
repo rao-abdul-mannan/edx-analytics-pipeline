@@ -204,6 +204,7 @@ Notes
 ~~~~~
 
 * Intended to be run weekly or daily.
+* When using a persistent hive metastore, set overwrite_hive to True.
 
 Task
 ~~~~
@@ -214,7 +215,8 @@ Task
       --end-date $(date +%Y-%m-%d -d "$TO_DATE") \
       --weeks 24 \
       --credentials $CREDENTIALS \
-      --n-reduce-tasks $NUM_REDUCE_TASKS
+      --n-reduce-tasks $NUM_REDUCE_TASKS \
+      --overwrite_mysql
 
 Incremental implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,7 +229,7 @@ The workflow now assumes that new Hive-ready data has been written persistently 
 
 This means for us that only the last three days of raw events get scanned nightly.  It is assumed that the previous days' data has been loaded by previous runs, or by performing a historical load.
 
-If this workflow is run weekly, an ``overwrite_n_days`` value of 3 would be more appropirate.
+If this workflow is run weekly, an ``overwrite_n_days`` value of 10 would be more appropriate.
 
 History task
 ~~~~~~~~~~~~
