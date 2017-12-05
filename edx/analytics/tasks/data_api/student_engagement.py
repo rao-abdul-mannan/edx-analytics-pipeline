@@ -33,6 +33,7 @@ from edx.analytics.tasks.util.hive import (
 from edx.analytics.tasks.util.overwrite import OverwriteOutputMixin
 from edx.analytics.tasks.util.url import get_target_from_url, url_path_join
 from edx.analytics.tasks.common.mysql_load import MysqlInsertTask
+from edx.analytics.tasks.util.record import Record, StringField, IntegerField, DateField
 from luigi.hive import HiveQueryTask
 
 log = logging.getLogger(__name__)
@@ -570,6 +571,27 @@ class StudentEngagementCsvFileTask(
             writer.writerow(row_dict)
 
 
+class StudentEngagementIntervalTypeRecord(Record):
+    """Student Engagement information used to populate student_engagement_{interval_type} table."""
+
+    end_date = DateField()
+    course_id = StringField(nullable=False, length=255)
+    username = StringField(nullable=False, length=255)
+    days_active = IntegerField()
+    problems_attempted = IntegerField()
+    problem_attempts = IntegerField()
+    problems_correct = IntegerField()
+    videos_played = IntegerField()
+    forum_posts = IntegerField()
+    forum_responses = IntegerField()
+    forum_comments = IntegerField()
+    forum_upvotes_given = IntegerField()
+    forum_downvotes_given = IntegerField()
+    forum_upvotes_received = IntegerField()
+    forum_downvotes_received = IntegerField()
+    textbook_pages_viewed = IntegerField()
+    last_subsection_viewed = StringField(nullable=False, length=1000)
+
 class StudentEngagementHiveTableTask(BareHiveTableTask):  # pragma: no cover
     """Creates the Hive storage table used to hold student_engagement_{interval_type} table data."""
 
@@ -588,25 +610,7 @@ class StudentEngagementHiveTableTask(BareHiveTableTask):  # pragma: no cover
 
     @property
     def columns(self):
-        return [
-            ('end_date', 'STRING'),
-            ('course_id', 'STRING'),
-            ('username', 'STRING'),
-            ('days_active', 'INT'),
-            ('problems_attempted', 'INT'),
-            ('problem_attempts', 'INT'),
-            ('problems_correct', 'INT'),
-            ('videos_played', 'INT'),
-            ('forum_posts', 'INT'),
-            ('forum_responses', 'INT'),
-            ('forum_comments', 'INT'),
-            ('forum_upvotes_given', 'INT'),
-            ('forum_downvotes_given', 'INT'),
-            ('forum_upvotes_received', 'INT'),
-            ('forum_downvotes_received', 'INT'),
-            ('textbook_pages_viewed', 'INT'),
-            ('last_subsection_viewed', 'STRING'),
-        ]
+        return StudentEngagementIntervalTypeRecord.get_hive_schema()
 
 
 class StudentEngagementPartitionTask(StudentEngagementTableDownstreamMixin, HivePartitionTask):
@@ -735,25 +739,7 @@ class StudentEngagementToMysqlTask(StudentEngagementTableDownstreamMixin, MysqlI
 
     @property
     def columns(self):
-        return [
-            ('end_date', 'DATE'),
-            ('course_id', 'VARCHAR(255) NOT NULL'),
-            ('username', 'VARCHAR(255) NOT NULL'),
-            ('days_active', 'INT'),
-            ('problems_attempted', 'INT'),
-            ('problem_attempts', 'INT'),
-            ('problems_correct', 'INT'),
-            ('videos_played', 'INT'),
-            ('forum_posts', 'INT'),
-            ('forum_responses', 'INT'),
-            ('forum_comments', 'INT'),
-            ('forum_upvotes_given', 'INT'),
-            ('forum_downvotes_given', 'INT'),
-            ('forum_upvotes_received', 'INT'),
-            ('forum_downvotes_received', 'INT'),
-            ('textbook_pages_viewed', 'INT'),
-            ('last_subsection_viewed', 'VARCHAR(1000) NOT NULL'),
-        ]
+        return StudentEngagementIntervalTypeRecord.get_sql_schema()
 
     @property
     def auto_primary_key(self):
